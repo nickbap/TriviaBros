@@ -1,6 +1,6 @@
 from triviabros import app, db
-from triviabros.forms import SignUpForm, LoginForm
-from triviabros.models import User
+from triviabros.forms import SignUpForm, LoginForm, QuestionForm
+from triviabros.models import User, Question
 from flask import render_template, url_for, flash, redirect
 from werkzeug.security import generate_password_hash, check_password_hash
 from flask_login import login_user, current_user, login_required, logout_user
@@ -38,6 +38,21 @@ def login():
         else:
             flash('Something went wrong with your login. Please try again!')
     return render_template('login.html', form=form)
+
+
+@app.route('/add-questions', methods=['GET', 'POST'])
+@login_required
+def add_questions():
+    form = QuestionForm()
+    questions = Question.query.filter_by(author=current_user)
+    if form.validate_on_submit():
+        q = Question(question=form.question.data, author=current_user)
+
+        db.session.add(q)
+        db.session.commit()
+
+        return redirect(url_for('add_questions'))
+    return render_template('add-questions.html', form=form, questions=questions)
 
 
 @app.route('/hidden')

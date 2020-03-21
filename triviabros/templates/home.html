@@ -4,7 +4,7 @@
 <div>
     {% if  current_user.is_authenticated %}
     <h1>Hey {{ current_user.username }}</h1>
-    <p>Begin adding your trivia questions <a href="#">here</a>.</p>
+    <p>Begin adding your trivia questions <a href="{{ url_for('add_questions') }}">here</a>.</p>
     {% else %}
     <h1>Hello Trivia Bros</h1>
     <p>This is a small app to make playing Trvia a little bit easier. If you haven't done so already, please

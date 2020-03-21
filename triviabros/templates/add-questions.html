@@ -1,0 +1,42 @@
+{% extends 'base.html' %}
+
+{% block app_content %}
+<div>
+    <h1>Questions</h1>
+    <p>Please add your trivia questions below.</p>
+</div>
+<div>
+    <form method="POST" action="{{ url_for('add_questions') }}">
+        {{ form.hidden_tag() }}
+        <fieldset class="form-group">
+            <div class="form-group">
+                {{ form.question.label(class="form-control-label") }}
+                {% if form.question.errors %}
+                {{ form.question(class="form-control form-control-lg is-invalid") }}
+                <div class="invalid-feedback">
+                    {% for error in form.question.errors %}
+                    <span>{{ error }}</span>
+                    {% endfor %}
+                </div>
+                {% else %}
+                {{ form.question(class="form-control form-control-md") }}
+                {% endif %}
+            </div>
+        </fieldset>
+        <div class="form-group">
+            {{ form.submit(class="btn btn-primary") }}
+        </div>
+    </form>
+    <div>
+        {% if questions %}
+        <ul class="list-group list-group-flush"></ul>
+        <p>You currently have {{ questions.count() }} questions.</p>
+        {% for question in questions %}
+        <li class="list-group-item">{{ question.question }}</li>
+        {% endfor %}
+        </ul>
+        {% endif %}
+    </div>
+</div>
+
+{% endblock %}
