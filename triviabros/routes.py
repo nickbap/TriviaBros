@@ -1,14 +1,18 @@
 from triviabros import app, db
 from triviabros.forms import SignUpForm, LoginForm, QuestionForm
 from triviabros.models import User, Question
-from flask import render_template, url_for, flash, redirect
+from flask import render_template, url_for, flash, redirect, request
 from werkzeug.security import generate_password_hash, check_password_hash
 from flask_login import login_user, current_user, login_required, logout_user
 
 
 @app.route('/')
 def home():
-    return render_template('home.html')
+    if current_user.is_authenticated:
+        users = User.query.all()
+    else:
+        users = None
+    return render_template('home.html', users=users)
 
 
 @app.route('/sign-up', methods=['GET', 'POST'])
@@ -53,6 +57,19 @@ def add_questions():
 
         return redirect(url_for('add_questions'))
     return render_template('add-questions.html', form=form, questions=questions)
+
+
+@app.route('/questions/<username>')
+@login_required
+def show_questions(username):
+    if current_user.username == username:
+        page = request.args.get('page', 1, type=int)
+        questions = Question.query.filter_by(
+            author=current_user).paginate(page=page, per_page=1)
+        return render_template('show-questions.html', questions=questions, username=username)
+    else:
+        questions = None
+        return render_template('answer-questions.html', questions=questions)
 
 
 @app.route('/hidden')
