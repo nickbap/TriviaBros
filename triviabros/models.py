@@ -18,6 +18,7 @@ class User(db.Model, UserMixin):
     email = db.Column(db.String(120), unique=True, nullable=False)
     password = db.Column(db.String(120), nullable=False)
     questions = db.relationship('Question', backref='author', lazy=True)
+    answers = db.relationship('Answer', backref='author', lazy=True)
 
     def __repr__(self):
         return '<User {}>'.format(self.username)
@@ -30,6 +31,30 @@ class Question(db.Model):
                            default=datetime.utcnow)
     question = db.Column(db.Text, nullable=False)
     user_id = db.Column(db.Integer, db.ForeignKey('users.id'), nullable=False)
+    answers = db.relationship('Answer', backref='question', lazy=True)
 
     def __repr__(self):
         return '<Question {} {}>'.format(self.question, self.user_id)
+
+
+class Answer(db.Model):
+    __tablename__ = 'answers'
+    id = db.Column(db.Integer, primary_key=True)
+    created_at = db.Column(db.DateTime, nullable=False,
+                           default=datetime.utcnow)
+    answer = db.Column(db.Text, nullable=False)
+    user_id = db.Column(db.Integer, db.ForeignKey('users.id'), nullable=False)
+    question_id = db.Column(db.Integer, db.ForeignKey(
+        'questions.id'), nullable=False)
+
+    @staticmethod
+    def get_answered_questions_for_user(username):
+        """Returns question ids for questions answered for given username object"""
+        answers = Answer.query.filter_by(author=username).all()
+        question_ids = []
+        for answer in answers:
+            question_ids.append(answer.question_id)
+        return question_ids
+
+    def __repr__(self):
+        return '<Answer {} {} {}>'.format(self.answer, self.user_id, self.question_id)

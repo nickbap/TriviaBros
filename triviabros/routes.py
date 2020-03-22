@@ -1,6 +1,6 @@
 from triviabros import app, db
-from triviabros.forms import SignUpForm, LoginForm, QuestionForm
-from triviabros.models import User, Question
+from triviabros.forms import SignUpForm, LoginForm, QuestionForm, AnswerForm
+from triviabros.models import User, Question, Answer
 from flask import render_template, url_for, flash, redirect, request
 from werkzeug.security import generate_password_hash, check_password_hash
 from flask_login import login_user, current_user, login_required, logout_user
@@ -68,8 +68,27 @@ def show_questions(username):
             author=current_user).paginate(page=page, per_page=1)
         return render_template('show-questions.html', questions=questions, username=username)
     else:
-        questions = None
-        return render_template('answer-questions.html', questions=questions)
+        form = AnswerForm()
+        # Return only questions not answered by the current user
+        user = User.query.filter_by(username=username).first()
+        questions_answered = Answer.get_answered_questions_for_user(
+            username=current_user)
+        questions = Question.query.filter_by(author=user).filter(
+            ~Question.id.in_(questions_answered)).all()
+        return render_template('answer-questions.html', form=form, questions=questions, username=username)
+
+
+@login_required
+@app.route('/submit-answers/<username>/<int:question_id>', methods=['POST'])
+def submit_answers(username, question_id):
+    print(request.data)
+    question = Question.query.filter_by(id=question_id).first()
+    a = Answer(answer=request.form['answer'],
+               author=current_user, question=question)
+
+    db.session.add(a)
+    db.session.commit()
+    return redirect(url_for('show_questions', username=username))
 
 
 @app.route('/hidden')

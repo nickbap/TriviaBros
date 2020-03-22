@@ -23,3 +23,8 @@ class LoginForm(FlaskForm):
 class QuestionForm(FlaskForm):
     question = StringField('Question', validators=[DataRequired()])
     submit = SubmitField('Add')
+
+class AnswerForm(FlaskForm):
+    answer = StringField('Answer', validators=[DataRequired()])
+    submit = SubmitField('Submit')
+
