@@ -50,7 +50,8 @@ def add_questions():
     form = QuestionForm()
     questions = Question.query.filter_by(author=current_user)
     if form.validate_on_submit():
-        q = Question(question=form.question.data, author=current_user)
+        q = Question(question_number=form.question_number.data,
+                     question=form.question.data, author=current_user)
 
         db.session.add(q)
         db.session.commit()

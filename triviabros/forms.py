@@ -1,7 +1,7 @@
 from flask_wtf import FlaskForm
 from flask_sqlalchemy import SQLAlchemy
-from wtforms import StringField, PasswordField, SubmitField
-from wtforms.validators import DataRequired, Length, Email, EqualTo
+from wtforms import StringField, PasswordField, SubmitField, IntegerField
+from wtforms.validators import DataRequired, Length, Email, EqualTo, ValidationError
 
 
 class SignUpForm(FlaskForm):
@@ -21,10 +21,16 @@ class LoginForm(FlaskForm):
 
 
 class QuestionForm(FlaskForm):
+    question_number = IntegerField(
+        'Question Number', validators=[DataRequired()])
     question = StringField('Question', validators=[DataRequired()])
     submit = SubmitField('Add')
+
+    def validate_question_number(self, question_number):
+        if not isinstance(question_number.data, int):
+            raise ValidationError('Must submit an Integer.')
+
 
 class AnswerForm(FlaskForm):
     answer = StringField('Answer', validators=[DataRequired()])
     submit = SubmitField('Submit')
-

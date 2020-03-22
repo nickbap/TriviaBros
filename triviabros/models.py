@@ -29,6 +29,7 @@ class Question(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     created_at = db.Column(db.DateTime, nullable=False,
                            default=datetime.utcnow)
+    question_number = db.Column(db.Integer, nullable=False)
     question = db.Column(db.Text, nullable=False)
     user_id = db.Column(db.Integer, db.ForeignKey('users.id'), nullable=False)
     answers = db.relationship('Answer', backref='question', lazy=True)
