@@ -4,6 +4,7 @@ from triviabros.models import User, Question, Answer
 from flask import render_template, url_for, flash, redirect, request
 from werkzeug.security import generate_password_hash, check_password_hash
 from flask_login import login_user, current_user, login_required, logout_user
+from sqlalchemy import func, case, desc
 
 
 @app.route('/')
@@ -121,6 +122,18 @@ def submit_graded_answers(username, answer_id):
     db.session.add(a)
     db.session.commit()
     return redirect(url_for('grade_answers', username=username))
+
+
+@login_required
+@app.route('/score')
+def score():
+    scores = db.session.query(User.username,
+                              func.sum(case([(Answer.is_correct == True, 1)], else_=0)).label('points'))\
+        .join(Answer)\
+        .group_by(User.username)\
+        .order_by(desc('points'))\
+        .all()
+    return render_template('score.html', scores=scores)
 
 
 @app.route('/hidden')

@@ -30,6 +30,9 @@
                 </li>
                 {% if current_user.is_authenticated %}
                 <li class="nav-item">
+                    <a class="nav-link text-white" href="{{ url_for('score') }}">Score</a>
+                </li>
+                <li class="nav-item">
                     <a class="nav-link text-white" href="{{ url_for('logout') }}">Logout</a>
                 </li>
                 {% else %}

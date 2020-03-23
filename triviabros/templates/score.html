@@ -1,0 +1,30 @@
+{% extends 'base.html' %}
+
+{% block app_content %}
+<div>
+    <h1>Score</h1>
+</div>
+<div>
+    <div>
+        {% if scores %}
+        <table class="table">
+            <thead>
+                <tr>
+                    <th scope="col">Player</th>
+                    <th scope="col">Score</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for score in scores %}
+                <tr>
+                    <td>{{ score.username }}</td>
+                    <td>{{ score.points }}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+        {% endif %}
+    </div>
+</div>
+
+{% endblock %}
