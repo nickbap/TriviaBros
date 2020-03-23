@@ -1,0 +1,31 @@
+{% extends 'base.html' %}
+
+{% block app_content %}
+<div>
+    <h1>Grade Answers</h1>
+</div>
+<div>
+    <div>
+        {% if answers %}
+        <ul class="list-unstyled">
+            {% for answer in answers %}
+            <li class="media border-top py-4">
+                <div class="media-body">
+                    <h5 class="mt-0 mb-1">Question {{ answer.Question.question_number }}:</h5>
+                    <h6> {{ answer.Question.question }}</h6>
+                    <p class="font-italic">Answer:</p>{{ answer.Answer.answer }}
+                </div>
+                <div>
+                    <a class="btn btn-success"
+                        href="{{ url_for('submit_graded_answers', username=username, answer_id=answer.Answer.id, is_correct=1) }}">Correct</a>
+                    <a class="btn btn-danger"
+                        href="{{ url_for('submit_graded_answers', username=username, answer_id=answer.Answer.id, is_correct=0) }}">Wrong</a>
+                </div>
+            </li>
+            {% endfor %}
+        </ul>
+        {% endif %}
+    </div>
+</div>
+
+{% endblock %}

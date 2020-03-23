@@ -92,6 +92,37 @@ def submit_answers(username, question_id):
     return redirect(url_for('show_questions', username=username))
 
 
+@login_required
+@app.route('/grade-answers/<username>')
+def grade_answers(username):
+    if current_user.username == username:
+        answers = db.session.query(Answer, Question)\
+                    .join(Question)\
+                    .filter(Question.author == current_user).filter(Answer.is_correct == None)\
+                    .order_by(Question.question_number)
+    else:
+        answers = None
+    return render_template('grade-answers.html', answers=answers, username=current_user.username)
+
+
+def convert_to_boolean(is_correct):
+    if is_correct == '1':
+        return True
+    else:
+        return False
+
+
+@login_required
+@app.route('/grade-answers/<username>/<int:answer_id>')
+def submit_graded_answers(username, answer_id):
+    a = Answer.query.filter_by(id=answer_id).first()
+    a.is_correct = convert_to_boolean(request.args.get('is_correct'))
+
+    db.session.add(a)
+    db.session.commit()
+    return redirect(url_for('grade_answers', username=username))
+
+
 @app.route('/hidden')
 @login_required
 def hidden():

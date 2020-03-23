@@ -23,6 +23,9 @@
         {% endif %}
         {% endfor %}
     </div>
+    <div>
+        <a class="btn btn-secondary" href="{{ url_for('grade_answers', username=username) }}">Grade Answers</a>
+    </div>
 </div>
 
 {% endblock %}

@@ -44,6 +44,7 @@ class Answer(db.Model):
     created_at = db.Column(db.DateTime, nullable=False,
                            default=datetime.utcnow)
     answer = db.Column(db.Text, nullable=False)
+    is_correct = db.Column(db.Boolean, nullable=True)
     user_id = db.Column(db.Integer, db.ForeignKey('users.id'), nullable=False)
     question_id = db.Column(db.Integer, db.ForeignKey(
         'questions.id'), nullable=False)
