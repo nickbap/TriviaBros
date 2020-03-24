@@ -3,15 +3,28 @@
 {% block app_content %}
 <div>
     {% if  current_user.is_authenticated %}
-    <h1>Hey {{ current_user.username }}</h1>
+    <h1>Hey {{ current_user.username }}!</h1>
     <p>Begin adding your trivia questions <a href="{{ url_for('add_questions') }}">here</a>.</p>
-
     <div>
         {% if users %}
-        <p>These players have already submitted questions.</p>
+        <p class="mb-0">To be the Quiz Master, click the link to your qusetions.</p>
+        <p>To answer the other questions, click the link to current Quiz Master's questions.</p>
+        {% for user in users %}
+        {% if current_user.username == user.username %}
+        <h2 class="py-2">Your Questions</h2>
+        <ul class="list-group list-group-flush"></ul>
+        <li class="list-group-item"><a
+                href="{{ url_for('show_questions', username=user.username ) }}">{{ user.username }}</a></li>
+        </ul>
+        {% endif %}
+        {% endfor %}
+        <h3 class="py-2">Everyone Else's Questions</h3>
         <ul class="list-group list-group-flush"></ul>
         {% for user in users %}
-        <li class="list-group-item"><a href="{{ url_for('show_questions', username=user.username ) }}">{{ user.username }}</a></li>
+        {% if current_user.username != user.username %}
+        <li class="list-group-item"><a
+                href="{{ url_for('show_questions', username=user.username ) }}">{{ user.username }}</a></li>
+        {% endif %}
         {% endfor %}
         </ul>
         {% endif %}
@@ -19,8 +32,9 @@
 
     {% else %}
     <h1>Hello Trivia Bros</h1>
-    <p>This is a small app to make playing Trivia a little bit easier. If you haven't done so already, please
-        <a href="{{ url_for('sign_up') }}">sign up</a> or <a href="{{ url_for('login') }}">login</a>.
+    <p class="mt-3">This is a small app to make playing Trivia a little bit easier.</p>
+    <p>If you haven't done so already, please <a href="{{ url_for('sign_up') }}">sign up</a> or <a
+            href="{{ url_for('login') }}">login</a>.
     </p>
     {% endif %}
 </div>
