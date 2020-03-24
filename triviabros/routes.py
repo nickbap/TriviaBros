@@ -10,7 +10,8 @@ from sqlalchemy import func, case, desc
 @app.route('/')
 def home():
     if current_user.is_authenticated:
-        users = User.query.all()
+        users = User.query.filter(User.id.in_(
+            db.session.query(Question.user_id).distinct())).all()
     else:
         users = None
     return render_template('home.html', users=users)
