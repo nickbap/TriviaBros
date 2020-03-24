@@ -22,10 +22,8 @@ def sign_up():
     if form.validate_on_submit():
         u = User(username=form.username.data, email=form.email.data,
                  password=generate_password_hash(form.password.data))
-
         db.session.add(u)
         db.session.commit()
-
         flash("Successful sign up for '{}'".format(form.username.data))
         return redirect(url_for('home'))
     return render_template('sign-up.html', form=form)
@@ -53,10 +51,8 @@ def add_questions():
     if form.validate_on_submit():
         q = Question(question_number=form.question_number.data,
                      question=form.question.data, author=current_user)
-
         db.session.add(q)
         db.session.commit()
-
         return redirect(url_for('add_questions'))
     return render_template('add-questions.html', form=form, questions=questions)
 
@@ -66,17 +62,17 @@ def add_questions():
 def show_questions(username):
     if current_user.username == username:
         page = request.args.get('page', 1, type=int)
-        questions = Question.query.filter_by(
-            author=current_user).paginate(page=page, per_page=1)
+        questions = Question.query.filter_by(author=current_user)\
+            .paginate(page=page, per_page=1)
         return render_template('show-questions.html', questions=questions, username=username)
     else:
         form = AnswerForm()
-        # Return only questions not answered by the current user
         user = User.query.filter_by(username=username).first()
         questions_answered = Answer.get_answered_questions_for_user(
             username=current_user)
-        questions = Question.query.filter_by(author=user).filter(
-            ~Question.id.in_(questions_answered)).all()
+        questions = Question.query.filter_by(author=user)\
+            .filter(~Question.id.in_(questions_answered))\
+            .all()
         return render_template('answer-questions.html', form=form, questions=questions, username=username)
 
 
@@ -87,7 +83,6 @@ def submit_answers(username, question_id):
     question = Question.query.filter_by(id=question_id).first()
     a = Answer(answer=request.form['answer'],
                author=current_user, question=question)
-
     db.session.add(a)
     db.session.commit()
     return redirect(url_for('show_questions', username=username))
@@ -99,7 +94,8 @@ def grade_answers(username):
     if current_user.username == username:
         answers = db.session.query(Answer, Question)\
                     .join(Question)\
-                    .filter(Question.author == current_user).filter(Answer.is_correct == None)\
+                    .filter(Question.author == current_user)\
+                    .filter(Answer.is_correct == None)\
                     .order_by(Question.question_number)
     else:
         answers = None
@@ -145,5 +141,4 @@ def hidden():
 @app.route('/logout')
 def logout():
     logout_user()
-    print('User should be logged out now.')
     return redirect(url_for('home'))
