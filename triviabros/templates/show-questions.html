@@ -2,28 +2,30 @@
 
 {% block app_content %}
 <div>
-    <h1>Show Questions</h1>
+    <h1 class="mb-3 border-bottom">Quiz Master - {{ current_user.username }}</h1>
 </div>
 <div>
     <div>
         {% if questions %}
         <ul class="list-group list-group-flush"></ul>
         {% for question in questions.items %}
-        <li class="list-group-item">{{ question.question }}</li>
+        <h2 class="mt-3">Question {{ question.question_number }}</h2>
+        <li class="list-group-item text-center font-weight-bold" style="font-size: 24px;">{{ question.question }}</li>
         {% endfor %}
         </ul>
         {% endif %}
     </div>
-    <div>
+    <div class="container py-2">
         {% for page_num in questions.iter_pages() %}
         {% if page_num %}
-        <a href="{{ url_for('show_questions', username=username, page=page_num) }}">{{ page_num }}</a>
+        <a class="btn btn-outline-primary"
+            href="{{ url_for('show_questions', username=username, page=page_num) }}">{{ page_num }}</a>
         {% else%}
         ...
         {% endif %}
         {% endfor %}
     </div>
-    <div>
+    <div class="container">
         <a class="btn btn-secondary" href="{{ url_for('grade_answers', username=username) }}">Grade Answers</a>
     </div>
 </div>
