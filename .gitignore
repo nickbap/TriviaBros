@@ -5,3 +5,4 @@ venv/
 TriviaBros.code-workspace
 scratch.txt
 trivia.db
+.env
