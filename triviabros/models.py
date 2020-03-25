@@ -31,6 +31,7 @@ class Question(db.Model):
                            default=datetime.utcnow)
     question_number = db.Column(db.Integer, nullable=False)
     question = db.Column(db.Text, nullable=False)
+    correct_answer = db.Column(db.Text, nullable=False)
     user_id = db.Column(db.Integer, db.ForeignKey('users.id'), nullable=False)
     answers = db.relationship('Answer', backref='question', lazy=True)
 

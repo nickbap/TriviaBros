@@ -11,9 +11,11 @@
             {% for answer in answers %}
             <li class="media border-top py-4">
                 <div class="media-body">
-                    <h5 class="mt-0 mb-1">Question {{ answer.Question.question_number }}:</h5>
+                    <h4 class="mt-0 mb-1">Question {{ answer.Question.question_number }}</h4>
                     <h6> {{ answer.Question.question }}</h6>
-                    <p class="font-italic">Answer:</p>{{ answer.Answer.answer }}
+                    <h5 class="my-1">Correct Answer</h5>
+                    <h6>{{ answer.Question.correct_answer }}</h6>
+                    <p class="font-italic pt-2">Answer Submitted:</p>{{ answer.Answer.answer }}
                 </div>
                 <div>
                     <a class="btn btn-success"
@@ -24,6 +26,9 @@
             </li>
             {% endfor %}
         </ul>
+        <div class="py-3">
+            <a class="btn btn-primary" href="{{ url_for('home') }}">Done</a>
+        </div>
         {% endif %}
     </div>
 </div>

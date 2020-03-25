@@ -29,6 +29,7 @@ class QuestionForm(FlaskForm):
     question_number = SelectField(
         'Question Number', choices=QUESTION_NUMBER_CHOICES)
     question = StringField('Question', validators=[DataRequired()])
+    correct_answer = StringField('Correct Answer', validators=[DataRequired()])
     submit = SubmitField('Add')
 
     def validate_question_number(self, question_number):

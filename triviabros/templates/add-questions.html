@@ -35,6 +35,19 @@
                 {{ form.question(class="form-control form-control-md") }}
                 {% endif %}
             </div>
+            <div class="form-group">
+                {{ form.correct_answer.label(class="form-control-label") }}
+                {% if form.correct_answer.errors %}
+                {{ form.correct_answer(class="form-control form-control-lg is-invalid") }}
+                <div class="invalid-feedback">
+                    {% for error in form.correct_answer.errors %}
+                    <span>{{ error }}</span>
+                    {% endfor %}
+                </div>
+                {% else %}
+                {{ form.correct_answer(class="form-control form-control-md") }}
+                {% endif %}
+            </div>
         </fieldset>
         <div class="form-group">
             {{ form.submit(class="btn btn-primary") }}
@@ -45,7 +58,9 @@
         <ul class="list-group list-group-flush"></ul>
         <p>You currently have {{ questions.count() }} questions.</p>
         {% for question in questions %}
-        <li class="list-group-item"><b>Question {{ question.question_number }}:</b> {{ question.question }}</li>
+        <li class="list-group-item"><b>Question {{ question.question_number }}:</b> {{ question.question }} <br>
+            <b>Correct Answer:</b> {{ question.correct_answer }}
+        </li>
         {% endfor %}
         </ul>
         {% endif %}

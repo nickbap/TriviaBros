@@ -51,7 +51,7 @@ def add_questions():
     questions = Question.query.filter_by(author=current_user)
     if form.validate_on_submit():
         q = Question(question_number=form.question_number.data,
-                     question=form.question.data, author=current_user)
+                     question=form.question.data, correct_answer=form.correct_answer.data, author=current_user)
         db.session.add(q)
         db.session.commit()
         return redirect(url_for('add_questions'))
