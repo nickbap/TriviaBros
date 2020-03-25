@@ -90,6 +90,29 @@ def submit_answers(username, question_id):
 
 
 @login_required
+@app.route('/review-answers/<username>')
+def review_answers(username):
+    form = AnswerForm()
+    answers = (db.session.query(User, Question, Answer)
+               .join(Question, Question.user_id == User.id)
+               .join(Answer, Answer.question_id == Question.id)
+               .filter(User.username == username)
+               .filter(Answer.user_id == current_user.id)
+               .all())
+    return render_template('review-answers.html', form=form, username=username, answers=answers)
+
+
+@login_required
+@app.route('/update-answer/<username>/<int:answer_id>', methods=['POST'])
+def update_answer(username, answer_id):
+    a = Answer.query.filter_by(id=answer_id).first()
+    a.answer = request.form['answer']
+    db.session.add(a)
+    db.session.commit()
+    return redirect(url_for('review_answers', username=username))
+
+
+@login_required
 @app.route('/grade-answers/<username>')
 def grade_answers(username):
     if current_user.username == username:

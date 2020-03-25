@@ -1,0 +1,65 @@
+{% extends 'base.html' %}
+
+{% block app_content %}
+<div>
+    <h1>Review My Answers for {{ username }}</h1>
+</div>
+<div>
+    <div>
+        {% if answers %}
+        <ul class="list-unstyled">
+            {% for answer in answers %}
+            <li class="media border-top py-4">
+                <div class="media-body">
+                    <h5 class="mt-0 mb-1">Question {{ answer.Question.question_number }}:</h5>
+                    <h6> {{ answer.Question.question }}</h6>
+                    <p class="font-italic">Answer:</p>{{ answer.Answer.answer }}
+                </div>
+                <div>
+                    <!-- Edit post modal area -->
+                    <form action="{{ url_for('update_answer', username=username, answer_id=answer.Answer.id) }}"
+                        method="POST">
+                        <div class="form-group">
+                            <!-- Button trigger modal -->
+                            <button type="button" class="btn btn-warning" data-toggle="modal"
+                                data-target="#editAnswerModal">
+                                Edit
+                            </button>
+                        </div>
+                        <!-- Modal -->
+                        <div class="modal fade" id="editAnswerModal" tabindex="-1" role="dialog"
+                            aria-labelledby="editAnswerModal" aria-hidden="true">
+                            <div class="modal-dialog" role="document">
+                                <div class="modal-content">
+                                    <div class="modal-header">
+                                        <h5 class="modal-title" id="editAnswerModal">Answer for Question
+                                            {{ answer.Question.question_number }} </h5>
+                                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                            <span aria-hidden="true">&times;</span>
+                                        </button>
+                                    </div>
+                                    <div class="modal-body">
+                                        {{ form.answer.label(class="form-control-label") }}
+                                        {{ form.answer(class="form-control form-control-md") }}
+                                    </div>
+                                    <div class="modal-footer">
+                                        <button type="button" class="btn btn-danger"
+                                            data-dismiss="modal">Nevermind</button>
+                                        <input class="btn btn-success" type="submit" value="Update">
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </li>
+            {% endfor %}
+        </ul>
+        <div class="py-3">
+            <a class="btn btn-primary" href="{{ url_for('home') }}">Done</a>
+        </div>
+        {% endif %}
+    </div>
+</div>
+
+{% endblock %}
