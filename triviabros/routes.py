@@ -18,6 +18,11 @@ def home():
     return render_template('home.html', users=users)
 
 
+@app.route('/rules')
+def rules():
+    return render_template('rules.html')
+
+
 @app.route('/sign-up', methods=['GET', 'POST'])
 def sign_up():
     form = SignUpForm()
