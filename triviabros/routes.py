@@ -10,8 +10,9 @@ from sqlalchemy import func, case, desc
 @app.route('/')
 def home():
     if current_user.is_authenticated:
-        users = User.query.filter(User.id.in_(
-            db.session.query(Question.user_id).distinct())).all()
+        users = (User.query.filter(
+                 User.id.in_(db.session.query(Question.user_id)
+                             .distinct())).all())
     else:
         users = None
     return render_template('home.html', users=users)
@@ -63,17 +64,17 @@ def add_questions():
 def show_questions(username):
     if current_user.username == username:
         page = request.args.get('page', 1, type=int)
-        questions = Question.query.filter_by(author=current_user)\
-            .paginate(page=page, per_page=1)
+        questions = (Question.query.filter_by(author=current_user)
+                     .paginate(page=page, per_page=1))
         return render_template('show-questions.html', questions=questions, username=username)
     else:
         form = AnswerForm()
         user = User.query.filter_by(username=username).first()
         questions_answered = Answer.get_answered_questions_for_user(
             username=current_user)
-        questions = Question.query.filter_by(author=user)\
-            .filter(~Question.id.in_(questions_answered))\
-            .all()
+        questions = (Question.query.filter_by(author=user)
+                     .filter(~Question.id.in_(questions_answered))
+                     .all())
         return render_template('answer-questions.html', form=form, questions=questions, username=username)
 
 
@@ -116,11 +117,11 @@ def update_answer(username, answer_id):
 @app.route('/grade-answers/<username>')
 def grade_answers(username):
     if current_user.username == username:
-        answers = db.session.query(Answer, Question)\
-                    .join(Question)\
-                    .filter(Question.author == current_user)\
-                    .filter(Answer.is_correct == None)\
-                    .order_by(Question.question_number)
+        answers = (db.session.query(Answer, Question)
+                   .join(Question)
+                   .filter(Question.author == current_user)
+                   .filter(Answer.is_correct == None)
+                   .order_by(Question.question_number))
     else:
         answers = None
     return render_template('grade-answers.html', answers=answers, username=current_user.username)
@@ -138,7 +139,6 @@ def convert_to_boolean(is_correct):
 def submit_graded_answers(username, answer_id):
     a = Answer.query.filter_by(id=answer_id).first()
     a.is_correct = convert_to_boolean(request.args.get('is_correct'))
-
     db.session.add(a)
     db.session.commit()
     return redirect(url_for('grade_answers', username=username))
@@ -147,19 +147,15 @@ def submit_graded_answers(username, answer_id):
 @login_required
 @app.route('/score')
 def score():
-    scores = db.session.query(User.username,
-                              func.sum(case([(Answer.is_correct == True, 1)], else_=0)).label('points'))\
-        .join(Answer)\
-        .group_by(User.username)\
-        .order_by(desc('points'))\
-        .all()
+    scores = (db.session.query(User.username,
+                               func.sum(
+                                   case([(Answer.is_correct == True, 1)], else_=0))
+                               .label('points'))
+              .join(Answer)
+              .group_by(User.username)
+              .order_by(desc('points'))
+              .all())
     return render_template('score.html', scores=scores)
-
-
-@app.route('/hidden')
-@login_required
-def hidden():
-    return 'If you can see this, you are logged into your account!'
 
 
 @app.route('/logout')
