@@ -10,4 +10,4 @@ For a new games, please use the `new_game.py` script that will delete any record
 * Web Framework - Flask
 * Web Server - Nginx
 * Database - MySQL
-* Front End - HTML, CSS, Bootstrap, Javascript
+* Front End - HTML, CSS, Bootstrap, Javascript, Chart.js

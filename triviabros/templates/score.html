@@ -4,27 +4,63 @@
 <div>
     <h1>Score</h1>
 </div>
-<div>
-    <div>
-        {% if scores %}
-        <table class="table">
-            <thead>
-                <tr>
-                    <th scope="col">Player</th>
-                    <th scope="col">Score</th>
-                </tr>
-            </thead>
-            <tbody>
-                {% for score in scores %}
-                <tr>
-                    <td>{{ score.username }}</td>
-                    <td>{{ score.points }}</td>
-                </tr>
-                {% endfor %}
-            </tbody>
-        </table>
-        {% endif %}
+<div class="container">
+    <div class="row">
+        <div class="col-2"></div>
+        <div class="col-8">
+            <div class="chart-container" style="responsive: true; maintainAspectRatio: true;"></div>
+            <canvas id="myChart"></canvas>
+        </div>
+        <div class="col-2"></div>
     </div>
 </div>
+<div>
+    {% if scores %}
+    <table class="table">
+        <thead>
+            <tr>
+                <th scope="col">Player</th>
+                <th scope="col">Score</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for score in scores %}
+            <tr>
+                <td>{{ score.username }}</td>
+                <td>{{ score.points }}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    {% endif %}
+</div>
 
+{% endblock %}
+{% block extra_scripts %}
+<script src="https://cdn.jsdelivr.net/npm/chart.js@2.8.0"></script>
+<script>
+    var ctx = document.getElementById('myChart').getContext('2d');
+    var chart = new Chart(ctx, {
+        type: 'bar',
+        data: {
+            labels: {{ players | safe }},
+            datasets: [{
+                label: 'Total Points',
+                backgroundColor: 'rgb(0, 128, 255)',
+                borderColor: 'rgb(0, 128, 255)',
+                data: {{ player_scores | safe }}
+            }]
+        },
+        options: {
+            scales: {
+                yAxes: [{
+                    ticks: {
+                        beginAtZero: true,
+                        stepSize: 1
+                    }
+                }]
+            }
+        }
+    });
+</script>
 {% endblock %}

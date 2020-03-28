@@ -160,7 +160,19 @@ def score():
               .group_by(User.username)
               .order_by(desc('points'))
               .all())
-    return render_template('score.html', scores=scores)
+
+    players = []
+    player_scores = []
+    for score in scores:
+        players.append(score.username)
+        if not score.points:
+            player_scores.append(0)
+        else:
+            player_scores.append(score.points)
+
+    data = {'players': players,
+              'player_scores': player_scores}
+    return render_template('score.html', scores=scores, **data)
 
 
 @app.route('/logout')
