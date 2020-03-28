@@ -31,8 +31,9 @@ def sign_up():
                  password=generate_password_hash(form.password.data))
         db.session.add(u)
         db.session.commit()
-        flash("Successful sign up for '{}'".format(form.username.data))
-        return redirect(url_for('home'))
+        flash("Successful sign up for '{}'! Please login to play!".format(
+            form.username.data))
+        return redirect(url_for('login'))
     return render_template('sign-up.html', form=form)
 
 
@@ -171,7 +172,7 @@ def score():
             player_scores.append(int(score.points))
 
     data = {'players': players,
-              'player_scores': player_scores}
+            'player_scores': player_scores}
     return render_template('score.html', scores=scores, **data)
 
 
