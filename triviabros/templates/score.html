@@ -4,18 +4,19 @@
 <div>
     <h1>Score</h1>
 </div>
-<div class="container">
-    <div class="row">
-        <div class="col-2"></div>
-        <div class="col-8">
-            <div class="chart-container" style="responsive: true; maintainAspectRatio: true;"></div>
-            <canvas id="myChart"></canvas>
+{% if scores %}
+<div class="container-fluid">
+    <div class="container-fluid d-flex align-items-center justify-content-center">
+        <div class="row justify-content-center">
+            <div class="col-10-md">
+                <div class="table-responsive" style="height:40vh; width:80vw">
+                    <canvas id="myChart" class="table"></canvas>
+                </div>
+            </div>
         </div>
-        <div class="col-2"></div>
     </div>
 </div>
 <div>
-    {% if scores %}
     <table class="table">
         <thead>
             <tr>
@@ -32,8 +33,8 @@
             {% endfor %}
         </tbody>
     </table>
-    {% endif %}
 </div>
+{% endif %}
 
 {% endblock %}
 {% block extra_scripts %}
@@ -52,6 +53,7 @@
             }]
         },
         options: {
+            maintainAspectRatio: false,
             scales: {
                 yAxes: [{
                     ticks: {
