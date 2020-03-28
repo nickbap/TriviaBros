@@ -1,4 +1,4 @@
-from triviabros.models import Question
+from triviabros.models import Question, User
 from flask_wtf import FlaskForm
 from flask_sqlalchemy import SQLAlchemy
 from flask_login import current_user
@@ -17,6 +17,20 @@ class SignUpForm(FlaskForm):
     password_confirmation = PasswordField('Confirm Password', validators=[
                                           DataRequired(), EqualTo('password')])
     submit = SubmitField('Sign Up')
+
+    def validate_username(self, username):
+        user = User.query.filter_by(username=username.data).first()
+        if user:
+            raise ValidationError(
+                "It looks this username already exists. \
+                     Please choose a different name!")
+
+    def validate_email(self, email):
+        user = User.query.filter_by(email=email.data.lower()).first()
+        if user:
+            raise ValidationError(
+                "It looks like you've already signed up with this email. \
+                     Please use a different email address!")
 
 
 class LoginForm(FlaskForm):
