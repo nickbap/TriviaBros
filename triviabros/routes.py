@@ -168,7 +168,7 @@ def score():
         if not score.points:
             player_scores.append(0)
         else:
-            player_scores.append(score.points)
+            player_scores.append(int(score.points))
 
     data = {'players': players,
               'player_scores': player_scores}
