@@ -27,7 +27,7 @@ def rules():
 def sign_up():
     form = SignUpForm()
     if form.validate_on_submit():
-        u = User(username=form.username.data, email=form.email.data,
+        u = User(username=form.username.data, email=form.email.data.lower(),
                  password=generate_password_hash(form.password.data))
         db.session.add(u)
         db.session.commit()
@@ -41,7 +41,7 @@ def sign_up():
 def login():
     form = LoginForm()
     if form.validate_on_submit():
-        user = User.query.filter_by(email=form.email.data).first()
+        user = User.query.filter_by(email=form.email.data.lower()).first()
         if user and check_password_hash(user.password, form.password.data):
             login_user(user)
             flash('Login Successful!')
