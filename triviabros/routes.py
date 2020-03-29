@@ -4,7 +4,7 @@ from triviabros.models import User, Question, Answer
 from flask import render_template, url_for, flash, redirect, request
 from werkzeug.security import generate_password_hash, check_password_hash
 from flask_login import login_user, current_user, login_required, logout_user
-from sqlalchemy import func, case, desc
+from sqlalchemy import func, case, asc, desc
 
 
 @app.route('/')
@@ -55,7 +55,8 @@ def login():
 @login_required
 def add_questions():
     form = QuestionForm()
-    questions = Question.query.filter_by(author=current_user)
+    questions = (Question.query.filter_by(author=current_user)
+                 .order_by(asc('question_number')))
     if form.validate_on_submit():
         q = Question(question_number=form.question_number.data,
                      question=form.question.data, correct_answer=form.correct_answer.data, author=current_user)
@@ -71,6 +72,7 @@ def show_questions(username):
     if current_user.username == username:
         page = request.args.get('page', 1, type=int)
         questions = (Question.query.filter_by(author=current_user)
+                     .order_by(asc('question_number'))
                      .paginate(page=page, per_page=1))
         return render_template('show-questions.html', questions=questions, username=username)
     else:
@@ -79,6 +81,7 @@ def show_questions(username):
         questions_answered = Answer.get_answered_questions_for_user(
             username=current_user)
         questions = (Question.query.filter_by(author=user)
+                     .order_by(asc('question_number'))
                      .filter(~Question.id.in_(questions_answered))
                      .all())
         return render_template('answer-questions.html', form=form, questions=questions, username=username)
@@ -105,6 +108,7 @@ def review_answers(username):
                .join(Answer, Answer.question_id == Question.id)
                .filter(User.username == username)
                .filter(Answer.user_id == current_user.id)
+               .order_by(asc(Question.question_number))
                .all())
     return render_template('review-answers.html', form=form, username=username, answers=answers)
 
